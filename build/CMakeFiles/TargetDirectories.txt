@@ -1,0 +1,3 @@
+D:/Code/SGL/build/CMakeFiles/SGL.dir
+D:/Code/SGL/build/CMakeFiles/ALL_BUILD.dir
+D:/Code/SGL/build/CMakeFiles/ZERO_CHECK.dir

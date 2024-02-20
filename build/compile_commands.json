@@ -1,0 +1,14 @@
+[
+{
+  "directory": "D:/Code/SG/build",
+  "command": "D:\\PROGRA~1\\msys64\\mingw64\\bin\\g++.exe -DSGL_BUILD -DSGL_EXPORTS -DSGL_VERSION_MAJOR=0 -DSGL_VERSION_MINOR=0 -DSGL_VERSION_PATCH=1 @CMakeFiles/SGL.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\SGL.dir\\src\\family\\config.cpp.obj -c D:\\Code\\SG\\src\\family\\config.cpp",
+  "file": "D:/Code/SG/src/family/config.cpp",
+  "output": "CMakeFiles/SGL.dir/src/family/config.cpp.obj"
+},
+{
+  "directory": "D:/Code/SG/build",
+  "command": "D:\\PROGRA~1\\msys64\\mingw64\\bin\\g++.exe -DSGL_BUILD -DSGL_VERSION_MAJOR=0 -DSGL_VERSION_MINOR=0 -DSGL_VERSION_PATCH=1 @CMakeFiles/test.dir/includes_CXX.rsp -g -std=c++17 -o CMakeFiles\\test.dir\\test\\main.cpp.obj -c D:\\Code\\SG\\test\\main.cpp",
+  "file": "D:/Code/SG/test/main.cpp",
+  "output": "CMakeFiles/test.dir/test/main.cpp.obj"
+}
+]
