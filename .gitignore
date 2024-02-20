@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# gitignore
+!.gitignore
+
+# VS Code
+/.vscode/
+/build/
+
+# Test
+/test/
