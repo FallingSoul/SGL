@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 project(SGL VERSION 0.0.1)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/build/debug")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/build/debug")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "{PROJECT_SOURCE_DIR}/build/release")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/build/release")
+
+# for third-party libraries
+add_subdirectory("${PROJECT_SOURCE_DIR}/third-party")
+find_package(Vulkan REQUIRED)
+
 
 function(set_option opname opdesc opvalue)
     if(DEFINED ${opname})
@@ -8,7 +17,6 @@ function(set_option opname opdesc opvalue)
     endif()
     option(${opname} ${opdesc} ${opvalue})
 endfunction()
-
 
 
 set(CMAKE_CXX_STANDARD 17)
@@ -38,19 +46,9 @@ target_compile_definitions(${PROJECT_NAME}
     PUBLIC ${PROJECT_NAME}_VERSION_MINOR=${PROJECT_VERSION_MINOR}
     PUBLIC ${PROJECT_NAME}_VERSION_PATCH=${PROJECT_VERSION_PATCH})
 # link libraries
-target_link_libraries(${PROJECT_NAME} glfw3 vulkan-1)
+target_link_libraries(${PROJECT_NAME} glfw ${Vulkan_LIBRARIES})
 
-
-
-
-
-# test
-if(${PROJECT_NAME}_BUILD_WITH_TEST)
-    file(GLOB_RECURSE ${PROJECT_NAME}_TEST "${PROJECT_SOURCE_DIR}/test/*.*")
-    message("---- Test ----")
-    foreach(X ${${PROJECT_NAME}_TEST})
-        message("\t${X}")
-    endforeach()
-    add_executable(test ${${PROJECT_NAME}_TEST})
-    target_link_libraries(test ${PROJECT_NAME})
+if(EXISTS "${PROJECT_SOURCE_DIR}/test")
+    message("Build Test...")
+    add_subdirectory("${PROJECT_SOURCE_DIR}/test")
 endif()

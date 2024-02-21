@@ -1,3 +1,14 @@
 D:/Code/SGL/build/CMakeFiles/SGL.dir
+D:/Code/SGL/build/CMakeFiles/INSTALL.dir
 D:/Code/SGL/build/CMakeFiles/ALL_BUILD.dir
 D:/Code/SGL/build/CMakeFiles/ZERO_CHECK.dir
+D:/Code/SGL/build/third-party/CMakeFiles/INSTALL.dir
+D:/Code/SGL/build/third-party/glfw/CMakeFiles/uninstall.dir
+D:/Code/SGL/build/third-party/glfw/CMakeFiles/INSTALL.dir
+D:/Code/SGL/build/third-party/glfw/CMakeFiles/ALL_BUILD.dir
+D:/Code/SGL/build/third-party/glfw/src/CMakeFiles/glfw.dir
+D:/Code/SGL/build/third-party/glfw/src/CMakeFiles/update_mappings.dir
+D:/Code/SGL/build/third-party/glfw/src/CMakeFiles/INSTALL.dir
+D:/Code/SGL/build/third-party/glfw/docs/CMakeFiles/INSTALL.dir
+D:/Code/SGL/build/test/CMakeFiles/test.dir
+D:/Code/SGL/build/test/CMakeFiles/INSTALL.dir

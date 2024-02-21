@@ -1,6 +1,6 @@
-^D:\CODE\SG\CMAKELISTS.TXT
+^D:\CODE\SGL\CMAKELISTS.TXT
 setlocal
-"D:\Program Files\CMake\bin\cmake.exe" -SD:/Code/SG -BD:/Code/SG/build --check-stamp-file D:/Code/SG/build/CMakeFiles/generate.stamp
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/Code/SGL -BD:/Code/SGL/build --check-stamp-file D:/Code/SGL/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

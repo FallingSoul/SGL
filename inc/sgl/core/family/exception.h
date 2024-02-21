@@ -8,7 +8,7 @@
 
 namespace sgl
 {
-    class SGL_API sglException : public std::exception
+    class sglException : public std::exception
     {
     public:
         sglException(const sglChar * desc)noexcept:_desc(desc){}
