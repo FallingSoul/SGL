@@ -45,7 +45,7 @@
 /.vscode/
 
 # Cmake
-build/
+/build/
 
 # Test
-test/
+/test/
