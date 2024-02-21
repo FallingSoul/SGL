@@ -6,10 +6,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/build/debug")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "{PROJECT_SOURCE_DIR}/build/release")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/build/release")
 
-# for third-party libraries
-add_subdirectory("${PROJECT_SOURCE_DIR}/third-party")
-find_package(Vulkan REQUIRED)
-
 
 function(set_option opname opdesc opvalue)
     if(DEFINED ${opname})
@@ -17,6 +13,16 @@ function(set_option opname opdesc opvalue)
     endif()
     option(${opname} ${opdesc} ${opvalue})
 endfunction()
+
+
+
+include(FetchContent)
+# for third-party libraries
+find_package(Vulkan REQUIRED)
+FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw SOURCE_DIR "${PROJECT_SOURCE_DIR}/third-party/glfw")
+FetchContent_MakeAvailable(glfw)
+
+
 
 
 set(CMAKE_CXX_STANDARD 17)
@@ -49,6 +55,5 @@ target_compile_definitions(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} glfw ${Vulkan_LIBRARIES})
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/test")
-    message("Build Test...")
     add_subdirectory("${PROJECT_SOURCE_DIR}/test")
 endif()
