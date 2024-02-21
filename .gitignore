@@ -35,7 +35,9 @@
 !.gitignore
 
 # VS Code
-.vscode/
+/.vscode/
+
+# Cmake
 build/
 
 # Test
