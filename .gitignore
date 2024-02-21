@@ -35,8 +35,8 @@
 !.gitignore
 
 # VS Code
-/.vscode/
-/build/
+.vscode/
+build/
 
 # Test
-/test/
+test/
