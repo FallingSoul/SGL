@@ -37,6 +37,10 @@
 # third-party
 /third-party/
 
+# VS
+/.vs/
+/out/
+
 # VS Code
 /.vscode/
 
