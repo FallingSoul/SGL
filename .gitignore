@@ -34,6 +34,9 @@
 # gitignore
 !.gitignore
 
+# third-party
+/third-party/
+
 # VS Code
 /.vscode/
 
