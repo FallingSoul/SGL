@@ -7,13 +7,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "{PROJECT_SOURCE_DIR}/build/release")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/build/release")
 
 
-function(set_option opname opdesc opvalue)
-    if(DEFINED ${opname})
-        unset(${opname} CACHE)
-    endif()
-    option(${opname} ${opdesc} ${opvalue})
-endfunction()
-
 
 
 include(FetchContent)
