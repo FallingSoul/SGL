@@ -9,6 +9,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable:4996)
 
+// _MSC_VER = Major Major Minor Minor
+// _MSC_FULL_VER = _MSC_VER Inside Inside Inside Inside
+// _MSC_BUILD = Patch
 #define SGL_CL_MAJOR (_MSC_VER / 100)
 #define SGL_CL_MINOR (_MSC_VER - SGL_CL_MAJOR * 100)
 #define SGL_CL_PATCH _MSC_BUILD
