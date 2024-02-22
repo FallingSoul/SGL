@@ -9,12 +9,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/build/${CMAKE_
 
 
 
-include(FetchContent)
 # for third-party libraries
 find_package(Vulkan REQUIRED)
-FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw SOURCE_DIR "${PROJECT_SOURCE_DIR}/third-party/glfw")
-FetchContent_MakeAvailable(glfw)
-
+add_subdirectory("${PROJECT_SOURCE_DIR}/third-party/glfw")
 
 
 
