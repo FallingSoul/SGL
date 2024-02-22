@@ -23,12 +23,14 @@ file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "${PROJECT_SOURCE_DIR}/src/*.*")
 
 message("---- Headers ----")
 foreach(X ${${PROJECT_NAME}_HEADERS})
-    message("\t${X}")
+    file(RELATIVE_PATH Y ${PROJECT_SOURCE_DIR} ${X})
+    message("\t${Y}")
 endforeach()
 
 message("---- Sources ----")
 foreach(X ${${PROJECT_NAME}_SOURCES})
-    message("\t${X}")
+    file(RELATIVE_PATH Y ${PROJECT_SOURCE_DIR} ${X})
+    message("\t${Y}")
 endforeach()
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
