@@ -33,7 +33,7 @@ endforeach()
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 # include
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/inc/")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/inc/" ${THIRDPARTY_INCLUDE})
 # define version numbers
 target_compile_definitions(${PROJECT_NAME}
     PUBLIC ${PROJECT_NAME}_BUILD
@@ -41,7 +41,7 @@ target_compile_definitions(${PROJECT_NAME}
     PUBLIC ${PROJECT_NAME}_VERSION_MINOR=${PROJECT_VERSION_MINOR}
     PUBLIC ${PROJECT_NAME}_VERSION_PATCH=${PROJECT_VERSION_PATCH})
 # link libraries
-target_link_libraries(${PROJECT_NAME} glfw imgui ${Vulkan_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${THIRDPARTY_LIBRARIES})
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/test")
     add_subdirectory("${PROJECT_SOURCE_DIR}/test")

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "sgl/sgl.h"
-
 int main()
 {
     auto config = sgl::sglGetConfigInfo();
