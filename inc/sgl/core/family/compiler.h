@@ -110,7 +110,14 @@
 #endif
 
 
-#if defined(__GNUC__)
+#if defined(__clang__)
+#define SGL_CL_CLANG 1
+
+#define SGL_CL_MAJOR __clang_major__
+#define SGL_CL_MINOR __clang_minor__
+#define SGL_CL_PATCH __clang_patchlevel__
+
+#elif defined(__GNUC__)
 #define SGL_CL_GCC 1
 
 #define SGL_CL_MAJOR __GNUC__
@@ -122,14 +129,6 @@
 
 #endif
 
-#if defined(__clang__)
-#define SGL_CL_CLANG 1
-
-#define SGL_CL_MAJOR __clang_major__
-#define SGL_CL_MINOR __clang_minor__
-#define SGL_CL_PATCH __clang_patchlevel__
-
-#endif
 
 #if !defined(SGL_CL_MAJOR)
 #define SGL_CL_MAJOR 0
