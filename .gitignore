@@ -35,7 +35,6 @@
 !.gitignore
 
 # third-party
-/third-party/
 
 # VS
 /.vs/
