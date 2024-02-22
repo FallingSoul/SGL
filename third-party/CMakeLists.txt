@@ -1,13 +1,21 @@
 
+# vulkan
 find_package(Vulkan REQUIRED)
+
+# glfw
 add_subdirectory(glfw)
 
 # imgui
-file(GLOB IMGUI_SOURCES imgui/*.cpp imgui/*.h)
-set(GLOB_RECURSE IMGUI_BACKENDS imgui/backends/imgui_impl_glfw.* imgui/backends/vulkan.*)
-add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_BACKENDS})
-target_include_directories(imgui PUBLIC imgui imgui/backends)
+file(GLOB IMGUI_SOURCES imgui/*.cpp imgui/*.h imgui/backends/imgui_impl_glfw.* imgui/backends/vulkan.*)
+set(IMGUI_INCLUDE imgui imgui/backends glfw/include)
 
-set(THIRDPARTY_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "third-party directory")
-set(THIRDPARTY_LIBRARIES ${Vulkan_LIBRARIES} glfw imgui CACHE STRING "third-party libraries")
-set(THIRDPARTY_INCLUDE ${THIRDPARTY_DIRECTORY}/stb CACHE STRING "third-party include")
+# stb
+file(GLOB STB_SOURCES stb/*.h)
+set(STB_INCLUDE stb)
+
+# third-party (for libraries without cmake)
+add_library(third-party STATIC third-party.cpp ${STB_SOURCES} ${IMGUI_SOURCES})
+target_include_directories(third-party PUBLIC  ${STB_INCLUDE} ${IMGUI_INCLUDE})
+
+
+set(THIRDPARTY_LIBRARIES ${Vulkan_LIBRARIES} glfw third-party CACHE STRING "Third-party libraries")

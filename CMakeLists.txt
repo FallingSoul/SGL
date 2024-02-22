@@ -33,7 +33,7 @@ endforeach()
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 # include
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/inc/" ${THIRDPARTY_INCLUDE})
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/inc/")
 # define version numbers
 target_compile_definitions(${PROJECT_NAME}
     PUBLIC ${PROJECT_NAME}_BUILD

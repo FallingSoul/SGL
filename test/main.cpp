@@ -1,5 +1,6 @@
 #include <iostream>
 #include "sgl/sgl.h"
+#include "stb_image.h"
 int main()
 {
     auto config = sgl::sglGetConfigInfo();
