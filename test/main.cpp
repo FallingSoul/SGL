@@ -1,11 +1,22 @@
 #include <iostream>
 #include "sgl/sgl.h"
 #include "stb_image.h"
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+
 int main()
 {
-    auto config = sgl::sglGetConfigInfo();
-    printf("lib: %s %d.%d.%d\n",config.name,config.version_major,config.version_minor,config.version_patch);
-    auto compiler = sgl::sglGetCompilerInfo();
-    printf("cl: %s %d.%d.%d\n",compiler.name,compiler.version_major,compiler.version_minor,compiler.version_patch);
+    glfwInit();
+    GLFWwindow * win = glfwCreateWindow(1920,1080,"Hello Vulkan",nullptr,nullptr);
+    glfwShowWindow(win);
+    
+    glfwMakeContextCurrent(win);
+    glfwSwapInterval(1);
+
+    while(!glfwWindowShouldClose(win))
+    {
+        glfwPollEvents();
+    }
     return 0;
 }
