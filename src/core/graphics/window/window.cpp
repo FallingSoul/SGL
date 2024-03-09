@@ -76,6 +76,22 @@ namespace sgl
                 {
                     glfwHideWindow(this->_window->window);
                 }
+                sglKetStatus sglWindow::get_key(sglKeyCode code)const
+                {
+                    int status = glfwGetKey(this->_window->window,int(code));
+                    return GLFW_RELEASE == status ? sglKetStatus::Release :
+                    GLFW_PRESS == status ? sglKetStatus::Press :
+                    GLFW_REPEAT == status ? sglKetStatus::Repeat :
+                    sglKetStatus::Invalid;
+                }
+                sglVoid sglWindow::get_size(sglInt & width,sglInt & height)const
+                {
+                    glfwGetWindowSize(this->_window->window,&width,&height);
+                }
+                sglVoid sglWindow::get_frame_size(sglInt & left,sglInt & top,sglInt & right,sglInt & bottom)const
+                {
+                    glfwGetWindowFrameSize(this->_window->window,&left,&top,&right,&bottom);
+                }
                 
                 sglVoid sglWindow::poll_event()
                 {
@@ -89,6 +105,7 @@ namespace sgl
                 {
                     glfwWaitEventsTimeout(time_out_seconds);
                 }
+                
             }
         }
     }
