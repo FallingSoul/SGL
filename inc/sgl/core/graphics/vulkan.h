@@ -1,0 +1,5 @@
+#ifndef __SGL_CORE_GRAPHICS_VULKAN__
+#define __SGL_CORE_GRAPHICS_VULKAN__
+
+
+#endif //!__SGL_CORE_GRAPHICS_VULKAN__

@@ -4,19 +4,14 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
-
+#include <glm/glm.hpp>
 int main()
 {
-    glfwInit();
-    GLFWwindow * win = glfwCreateWindow(1920,1080,"Hello Vulkan",nullptr,nullptr);
-    glfwShowWindow(win);
+    sgl::core::graphics::window::sglWindow window("Hello World!");
+    window.show();
+    while(!window.is_closed())window.poll_event();
     
-    glfwMakeContextCurrent(win);
-    glfwSwapInterval(1);
 
-    while(!glfwWindowShouldClose(win))
-    {
-        glfwPollEvents();
-    }
+
     return 0;
 }
