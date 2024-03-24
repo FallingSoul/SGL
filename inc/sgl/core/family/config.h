@@ -4,11 +4,12 @@
 #include "sgl/core/family/type.h"
 #include "sgl/core/family/compiler.h"
 
-
+#define SGL_EXPORT __declspec(dllexport)
+#define SGL_IMPORT __declspec(dllimport)
 #ifdef SGL_BUILD
-#define SGL_API __declspec(dllexport)
+#define SGL_API SGL_EXPORT
 #else
-#define SGL_API __declspec(dllimport)
+#define SGL_API SGL_IMPORT
 #endif
 
 namespace sgl

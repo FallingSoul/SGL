@@ -18,7 +18,6 @@ set(STB_INCLUDE stb)
 
 # third-party (for libraries without cmake)
 add_library(third-party STATIC third-party.cpp ${STB_SOURCES} ${IMGUI_SOURCES})
-target_include_directories(third-party PUBLIC  ${STB_INCLUDE} ${IMGUI_INCLUDE})
-
+target_include_directories(third-party PUBLIC  ${STB_INCLUDE} ${IMGUI_INCLUDE} ${Vulkan_INCLUDE_DIRS})
 
 set(THIRDPARTY_LIBRARIES ${Vulkan_LIBRARIES} glfw glm third-party CACHE STRING "Third-party libraries")

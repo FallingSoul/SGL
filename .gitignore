@@ -42,6 +42,7 @@
 
 # VS Code
 /.vscode/
+/.cache/
 
 # Cmake
 /build/

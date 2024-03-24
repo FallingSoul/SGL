@@ -16,6 +16,11 @@ namespace sgl
                 {
                     GLFWwindow * window;
                     std::string name;
+                    struct sglUserPointer
+                    {
+                        sglWindow * window;
+                        sglVoid * ptr;
+                    }user_ptr;
                     class sglWindowErrorCallback
                     {
                     public:
@@ -43,11 +48,24 @@ namespace sgl
                 };
                 sglWindow_Impl::sglWindowInitializer sglWindow_Impl::initializer;
                 sglWindow::sglWindow(const sglChar * name)
-                    :_window(nullptr)
+                    :_window(new sglWindow_Impl)
                 {
-                    this->_window = new sglWindow_Impl;
+                    this->_window->user_ptr.window = this;
+                    this->_window->user_ptr.ptr = nullptr;
                     this->_window->name = name;
-                    this->_window->window = glfwCreateWindow(1280,720,name,nullptr,nullptr);
+                    sglInt width,height;
+                    default_size(width,height);
+                    this->_window->window = glfwCreateWindow(width,height,name,nullptr,nullptr);
+                    glfwSetWindowUserPointer(this->_window->window,&this->_window->user_ptr);
+                }
+                sglWindow::sglWindow(const sglChar * name,sglInt width,sglInt height)
+                    :_window(new sglWindow_Impl)
+                {
+                    this->_window->user_ptr.window = this;
+                    this->_window->user_ptr.ptr = nullptr;
+                    this->_window->name = name;
+                    this->_window->window = glfwCreateWindow(width,height,name,nullptr,nullptr);
+                    glfwSetWindowUserPointer(this->_window->window,&this->_window->user_ptr);
                 }
                 sglWindow::~sglWindow()
                 {
@@ -92,10 +110,23 @@ namespace sgl
                 {
                     glfwGetWindowFrameSize(this->_window->window,&left,&top,&right,&bottom);
                 }
+                sglVoid sglWindow::set_user_pointer(sglVoid * ptr)
+                {
+                    this->_window->user_ptr.ptr = ptr;
+                }
+                sglVoid * sglWindow::get_user_pointer()const
+                {
+                    return this->_window->user_ptr.ptr;
+                }
                 
                 sglVoid sglWindow::poll_event()
                 {
                     glfwPollEvents();
+                }
+                sglVoid sglWindow::poll_event(sglDouble seconds)
+                {
+                    sglDouble begin = glfwGetTime();
+                    while(glfwGetTime() - begin < seconds)glfwPollEvents();
                 }
                 sglVoid sglWindow::wait_event()
                 {
@@ -104,6 +135,18 @@ namespace sgl
                 sglVoid sglWindow::wait_event(sglDouble time_out_seconds)
                 {
                     glfwWaitEventsTimeout(time_out_seconds);
+                }
+                sglVoid sglWindow::default_size(sglInt & width,sglInt & height)
+                {
+                    width = 1280;
+                    height = 720;
+                }
+                const sglChar ** sglWindow::required_extensions(sglInt * count)
+                {
+                    uint32_t _count_ = 0;
+                    const sglChar ** extensions = glfwGetRequiredInstanceExtensions(&_count_);
+                    if(count)*count = _count_;
+                    return extensions;
                 }
                 
             }

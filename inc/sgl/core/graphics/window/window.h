@@ -18,6 +18,7 @@ namespace sgl
                     sglWindow(const sglWindow &) = delete;
                     sglWindow & operator =(const sglWindow &) = delete;
                     sglWindow(const sglChar * name);
+                    sglWindow(const sglChar * name,sglInt width,sglInt height);
                     ~sglWindow();
                     sglVoid close();
                     sglBool is_closed()const;
@@ -27,9 +28,14 @@ namespace sgl
                     sglKetStatus get_key(sglKeyCode code)const;
                     sglVoid get_size(sglInt & width,sglInt & height)const;
                     sglVoid get_frame_size(sglInt & left,sglInt & top,sglInt & right,sglInt & bottom)const;
+                    sglVoid set_user_pointer(sglVoid * ptr);
+                    sglVoid * get_user_pointer()const;
                     static sglVoid poll_event();
+                    static sglVoid poll_event(sglDouble seconds);
                     static sglVoid wait_event();
                     static sglVoid wait_event(sglDouble time_out_seconds);
+                    static sglVoid default_size(sglInt & width,sglInt & height);
+                    static const sglChar ** required_extensions(sglInt * count);
 
 
                 private:

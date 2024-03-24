@@ -16,7 +16,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/build/$
 
 
 
-
 # for third-party libraries
 add_subdirectory("${PROJECT_SOURCE_DIR}/third-party")
 
@@ -41,17 +40,21 @@ foreach(X ${${PROJECT_NAME}_SOURCES})
     message("\t${Y}")
 endforeach()
 
-add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+set(SGL_LIBRARY ${PROJECT_NAME})
+add_library(${SGL_LIBRARY} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 # include
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/inc/")
+target_include_directories(${SGL_LIBRARY} PUBLIC "${PROJECT_SOURCE_DIR}/inc/")
 # define version numbers
-target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ${PROJECT_NAME}_BUILD
-    PUBLIC ${PROJECT_NAME}_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
-    PUBLIC ${PROJECT_NAME}_VERSION_MINOR=${PROJECT_VERSION_MINOR}
-    PUBLIC ${PROJECT_NAME}_VERSION_PATCH=${PROJECT_VERSION_PATCH})
+target_compile_definitions(${SGL_LIBRARY}
+    PRIVATE ${SGL_LIBRARY}_BUILD
+    PUBLIC ${SGL_LIBRARY}_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    PUBLIC ${SGL_LIBRARY}_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    PUBLIC ${SGL_LIBRARY}_VERSION_PATCH=${PROJECT_VERSION_PATCH})
 # link libraries
-target_link_libraries(${PROJECT_NAME} ${THIRDPARTY_LIBRARIES})
+target_link_libraries(${SGL_LIBRARY} ${THIRDPARTY_LIBRARIES})
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    target_link_libraries(${SGL_LIBRARY} stdc++)
+endif()
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/test")
     add_subdirectory("${PROJECT_SOURCE_DIR}/test")
