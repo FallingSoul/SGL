@@ -1,3 +1,5 @@
+
+
 #include <iostream>
 #include <thread>
 #include "sgl/sgl.h"
@@ -6,8 +8,6 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <glm/glm.hpp>
-
-
 
 int main()
 {
@@ -19,41 +19,22 @@ int main()
     }
     sglInt count = 0;
     const sglChar ** extensions = core::graphics::window::sglWindow::required_extensions(&count);
-    auto ext = new core::graphics::vulkan::sglVkInstanceExtension[count];
-    printf("count: %d\n",count);
-    for(sglInt index = 0;index < count;index++)
+    core::graphics::vulkan::sglVkInstanceExtensions all_extensions;
+    printf("All extensions: %d\n",all_extensions.count());
+    for(sglInt index = 0;index < all_extensions.count();index++)
     {
-        core::graphics::vulkan::sglVkInstanceExtension extension = extensions[index];
-        ext[index] = extension;
-        printf("%d: %s ver %d.%d.%d\n",
-            extension.index(),extension.get_config().name,
-            extension.get_config().version_major,
-            extension.get_config().version_minor,
-            extension.get_config().version_patch);
+        auto ext = all_extensions[index];
+        printf("%s %d.%d.%d\n",ext.name,ext.version_major,ext.version_minor,ext.version_patch);
     }
-    printf("All: %d\n",core::graphics::vulkan::sglVkInstanceExtension::count());
-    for(core::graphics::vulkan::sglVkInstanceExtension extension = 0;extension.valid();extension = extension.next())
+    core::graphics::vulkan::sglVkInstanceLayers all_layers;
+    printf("All layers: %d\n",all_layers.count());
+    for(sglInt index = 0;index < all_layers.count();index++)
     {
-        printf("%d: %s ver %d.%d.%d\n",
-            extension.index(),extension.get_config().name,
-            extension.get_config().version_major,
-            extension.get_config().version_minor,
-            extension.get_config().version_patch);
+        auto ext = all_layers[index];
+        printf("%s %d.%d.%d\n",ext.name,ext.version_major,ext.version_minor,ext.version_patch);
     }
-    core::graphics::vulkan::sglVkInstance instance({"Vulkan App",0,0,1},ext,count,"VK_LAYER_KHRONOS_validation");
+    core::graphics::vulkan::sglVkInstance instance({"Hello Vulkan!",0,0,1},extensions,count,"VK_LAYER_KHRONOS_validation");
     core::graphics::vulkan::sglVkDebugMessenger messenger(instance);
-    core::graphics::vulkan::sglVkPhysicalDevice pdevice(instance,0);
-
-    printf("Physical Device: %d\n",pdevice.count());
-    for(;pdevice.valid();++pdevice)
-    {
-        sglConfigInfo driver = pdevice.get_config_driver();
-        sglConfigInfo api = pdevice.get_config_api();
-        auto type = pdevice.get_type();
-        printf("%s %d.%d.%d %s\n",driver.name,driver.version_major,driver.version_minor,driver.version_patch,
-            decltype(type)::Discrete == type ? "Discrete" : decltype(type)::Integrated == type ? "Integrated" : "Unknown");
-    }
-    printf("Finished!\n");
-    delete [] ext;
+    printf("Finished! %gsec\n",clock() / 1000.);
     return 0;
 }

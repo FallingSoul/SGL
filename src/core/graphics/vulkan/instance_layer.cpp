@@ -9,151 +9,117 @@ namespace sgl
         {
             namespace vulkan
             {
-                struct sglVkInstanceLayer_Impl
+                struct sglVkInstanceLayers_Impl
                 {
-                    static struct sglVkInstanceLayerGroup
-                    {
-                        VkLayerProperties * layers;
-                        sglInt count;
-                        sglVkInstanceLayerGroup()
-                            :layers(nullptr),count(0)
-                        {
-                            uint32_t _count_ = 0;
-                            VkResult result;
-                            result = vkEnumerateInstanceLayerProperties(&_count_,nullptr);
-                            if(VK_SUCCESS != result)
-                            {
-                                throw sglException("Cannot enumerate vulkan layer properties!");
-                            }
-                            this->count = _count_;
-                            this->layers = new VkLayerProperties[this->count];
-                            result = vkEnumerateInstanceLayerProperties(&_count_,this->layers);
-                            if(VK_SUCCESS != result)
-                            {
-                                throw sglException("Cannot enumerate vulkan layer properties!");
-                            }
-                        }
-                        ~sglVkInstanceLayerGroup()
-                        {
-                            delete [] this->layers;
-                            this->layers = nullptr;
-                            this->count = 0;
-                        }
-                    }group;
-                    VkLayerProperties * layer;
+                    sglInt count;
+                    VkLayerProperties * properties;
                 };
-                sglVkInstanceLayer_Impl::sglVkInstanceLayerGroup sglVkInstanceLayer_Impl::group;
-
                 
-                sglVkInstanceLayer::sglVkInstanceLayer()
-                    :_layer(new sglVkInstanceLayer_Impl)
+                const sglVkInstanceLayers & sglVkInstanceLayers::operator =(const sglVkInstanceLayers & layers)
                 {
-                    this->_layer->layer = nullptr;
+                    if(this->_layers->count != layers._layers->count)
+                    {
+                        this->_layers->count = layers._layers->count;
+                        delete [] this->_layers->properties;
+                        this->_layers->properties = new VkLayerProperties[this->_layers->count];
+                    }
+                    for(sglInt index = 0;index < this->_layers->count;index++)this->_layers->properties[index] = layers._layers->properties[index];
+                    return *this;
                 }
-                sglVkInstanceLayer::sglVkInstanceLayer(const sglChar * name)
-                    :_layer(new sglVkInstanceLayer_Impl)
+                sglVkInstanceLayers::sglVkInstanceLayers(const sglVkInstanceLayers & layers)
+                    :_layers(new sglVkInstanceLayers_Impl)
                 {
-                    this->_layer->layer = nullptr;
-                    for(sglInt index = 0;index < sglVkInstanceLayer_Impl::group.count;index++)
+                    this->_layers->count = layers._layers->count;
+                    this->_layers->properties = new VkLayerProperties[this->_layers->count];
+                    for(sglInt index = 0;index < this->_layers->count;index++)this->_layers->properties[index] = layers._layers->properties[index];
+                }
+                sglVkInstanceLayers::sglVkInstanceLayers()
+                    :_layers(new sglVkInstanceLayers_Impl)
+                {
+                    uint32_t _count_;
+                    VkResult result;
+                    result = vkEnumerateInstanceLayerProperties(&_count_,nullptr);
+                    if(VK_SUCCESS != result)throw sglException("vkEnumerateInstanceLayerProperties failed!",result);
+                    this->_layers->count = _count_;
+                    this->_layers->properties = new VkLayerProperties[_count_];
+                    result = vkEnumerateInstanceLayerProperties(&_count_,this->_layers->properties);
+                    if(VK_SUCCESS != result)throw sglException("vkEnumerateInstanceLayerProperties failed!",result);
+                }
+                sglVkInstanceLayers::~sglVkInstanceLayers()
+                {
+                    delete [] this->_layers->properties;
+                    delete this->_layers;
+                    this->_layers = nullptr;
+                }
+                sglBool sglVkInstanceLayers::existent(const sglChar * name)const
+                {
+                    for(sglInt index = 0;index < this->_layers->count;index++)
                     {
                         const sglChar * src = name;
-                        const sglChar * dst = &sglVkInstanceLayer_Impl::group.layers[index].layerName[0];
+                        const sglChar * dst = &this->_layers->properties[index].layerName[0];
                         while(*src == *dst && *src && *dst)++src,++dst;
                         if(*src == *dst)
                         {
-                            this->_layer->layer = &sglVkInstanceLayer_Impl::group.layers[index];
-                            break;
+                            return true;
                         }
                     }
-
+                    return false;
                 }
-                sglVkInstanceLayer::sglVkInstanceLayer(sglInt index)
-                    :_layer(new sglVkInstanceLayer_Impl)
+                sglInt sglVkInstanceLayers::find(const sglChar * name)const
                 {
-                    this->_layer->layer = nullptr;
-                    if(index >= sglVkInstanceLayer_Impl::group.count)
+                    for(sglInt index = 0;index < this->_layers->count;index++)
                     {
-                        throw sglException("Out of range!");
-                    }
-                    this->_layer->layer = &sglVkInstanceLayer_Impl::group.layers[index];
-                }
-                sglVkInstanceLayer::sglVkInstanceLayer(const sglVkInstanceLayer & layer)
-                    :_layer(new sglVkInstanceLayer_Impl)
-                {
-                    this->_layer->layer = layer._layer->layer;
-                }
-                sglVkInstanceLayer::~sglVkInstanceLayer()
-                {
-                    delete this->_layer;
-                    this->_layer = nullptr;
-                }
-                sglConfigInfo sglVkInstanceLayer::get_config()const
-                {
-                    sglConfigInfo config{};
-                    if(nullptr == this->_layer->layer)return config;
-                    config.name = &this->_layer->layer->layerName[0];
-                    config.version_major = VK_VERSION_MAJOR(this->_layer->layer->specVersion);
-                    config.version_minor = VK_VERSION_MINOR(this->_layer->layer->specVersion);
-                    config.version_patch = VK_VERSION_PATCH(this->_layer->layer->specVersion);
-                    return config;
-                }
-                sglConfigInfo sglVkInstanceLayer::get_config_impl()const
-                {
-                    sglConfigInfo config{};
-                    if(nullptr == this->_layer->layer)return config;
-                    config.name = &this->_layer->layer->layerName[0];
-                    config.version_major = VK_VERSION_MAJOR(this->_layer->layer->implementationVersion);
-                    config.version_minor = VK_VERSION_MINOR(this->_layer->layer->implementationVersion);
-                    config.version_patch = VK_VERSION_PATCH(this->_layer->layer->implementationVersion);
-                    return config;
-                }
-                const sglChar * sglVkInstanceLayer::get_description()const
-                {
-                    if(nullptr == this->_layer->layer)return nullptr;
-                    return &this->_layer->layer->description[0];
-                }
-                sglBool sglVkInstanceLayer::valid()const
-                {
-                    return nullptr != this->_layer->layer;
-                }
-                sglBool sglVkInstanceLayer::invalid()const
-                {
-                    return nullptr == this->_layer->layer;
-                }
-                sglVkInstanceLayer sglVkInstanceLayer::next()const
-                {
-                    sglVkInstanceLayer layer = *this;
-                    if(layer._layer->layer)
-                    {
-                        ++layer._layer->layer;
-                        if(layer.index() >= this->count())
+                        const sglChar * src = name;
+                        const sglChar * dst = &this->_layers->properties[index].layerName[0];
+                        while(*src == *dst && *src && *dst)++src,++dst;
+                        if(*src == *dst)
                         {
-                            layer._layer->layer = nullptr;
+                            return index;
                         }
                     }
-                    else layer._layer->layer = &sglVkInstanceLayer_Impl::group.layers[0];
+                    return ~0;
+                }
+                sglInt sglVkInstanceLayers::count()const
+                {
+                    return this->_layers->count;
+                }
+                sglVkInstanceLayer sglVkInstanceLayers::at(sglInt index)const
+                {
+                    sglVkInstanceLayer layer;
+                    layer.name = &this->_layers->properties[index].layerName[0];
+                    layer.description = &this->_layers->properties[index].description[0];
+                    layer.version_major = VK_VERSION_MAJOR(this->_layers->properties[index].specVersion);
+                    layer.version_minor = VK_VERSION_MINOR(this->_layers->properties[index].specVersion);
+                    layer.version_patch = VK_VERSION_PATCH(this->_layers->properties[index].specVersion);
+                    
+                    layer.implementation_version_major = VK_VERSION_MAJOR(this->_layers->properties[index].implementationVersion);
+                    layer.implementation_version_minor = VK_VERSION_MINOR(this->_layers->properties[index].implementationVersion);
+                    layer.implementation_version_patch = VK_VERSION_PATCH(this->_layers->properties[index].implementationVersion);
                     return layer;
                 }
-                sglInt sglVkInstanceLayer::index()const
+                sglVkInstanceLayer sglVkInstanceLayers::at(const sglChar * name)const
                 {
-                    return (this->_layer->layer - sglVkInstanceLayer_Impl::group.layers);
+                    sglInt index = this->find(name);
+
+                    sglVkInstanceLayer layer;
+                    layer.name = &this->_layers->properties[index].layerName[0];
+                    layer.description = &this->_layers->properties[index].description[0];
+                    layer.version_major = VK_VERSION_MAJOR(this->_layers->properties[index].specVersion);
+                    layer.version_minor = VK_VERSION_MINOR(this->_layers->properties[index].specVersion);
+                    layer.version_patch = VK_VERSION_PATCH(this->_layers->properties[index].specVersion);
+                    
+                    layer.implementation_version_major = VK_VERSION_MAJOR(this->_layers->properties[index].implementationVersion);
+                    layer.implementation_version_minor = VK_VERSION_MINOR(this->_layers->properties[index].implementationVersion);
+                    layer.implementation_version_patch = VK_VERSION_PATCH(this->_layers->properties[index].implementationVersion);
+                    return layer;
                 }
-                sglBool sglVkInstanceLayer::operator ==(const sglVkInstanceLayer & layer)const
+                sglVkInstanceLayer sglVkInstanceLayers::operator [](sglInt index)const
                 {
-                    return this->_layer->layer == layer._layer->layer;
+                    return this->at(index);
                 }
-                const sglVkInstanceLayer & sglVkInstanceLayer::operator =(const sglVkInstanceLayer & layer)
+                sglVkInstanceLayer sglVkInstanceLayers::operator [](const sglChar * name)const
                 {
-                    this->_layer->layer = layer._layer->layer;
-                    return *this;
-                }
-                const sglVkInstanceLayer & sglVkInstanceLayer::operator ++()
-                {
-                    return *this = this->next();
-                }
-                sglInt sglVkInstanceLayer::count()
-                {
-                    return sglVkInstanceLayer_Impl::group.count;
+                    return this->at(name);
                 }
             }
         }

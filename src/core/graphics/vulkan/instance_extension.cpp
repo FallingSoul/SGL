@@ -1,7 +1,6 @@
 #include <vulkan/vulkan.h>
 #include "sgl/core/graphics/vulkan/instance_extension.h"
 
-
 namespace sgl
 {
     namespace core
@@ -10,136 +9,106 @@ namespace sgl
         {
             namespace vulkan
             {
-                struct sglVkInstanceExtension_Impl
+                struct sglVkInstanceExtensions_Impl
                 {
-                    static struct sglVkInstanceExtensionGroup
-                    {
-                        VkExtensionProperties * extensions;
-                        sglInt count;
-                        ~sglVkInstanceExtensionGroup()
-                        {
-                            delete [] this->extensions;
-                            this->extensions = nullptr;
-                            this->count = 0;
-                        }
-                        sglVkInstanceExtensionGroup()
-                            :extensions(nullptr),count(0)
-                        {
-                            uint32_t _count_ = 0;
-                            VkResult result;
-                            result = vkEnumerateInstanceExtensionProperties(nullptr,&_count_,nullptr);
-                            if(VK_SUCCESS != result)
-                            {
-                                throw sglException("Cannot enumrate vulkan extension properties!");
-                            }
-                            this->count = _count_;
-                            this->extensions = new VkExtensionProperties[this->count];
-                            result = vkEnumerateInstanceExtensionProperties(nullptr,&_count_,this->extensions);
-                            if(VK_SUCCESS != result)
-                            {
-                                throw sglException("Cannot enumrate vulkan extension properties!");
-                            }
-                        }
-                    }group;
-                    VkExtensionProperties * extension;
+                    VkExtensionProperties * properties;
+                    sglInt count;
                 };
-                sglVkInstanceExtension_Impl::sglVkInstanceExtensionGroup sglVkInstanceExtension_Impl::group{};
-
-
-                sglInt sglVkInstanceExtension::count()
+                
+                const sglVkInstanceExtensions & sglVkInstanceExtensions::operator =(const sglVkInstanceExtensions & extensions)
                 {
-                    return sglVkInstanceExtension_Impl::group.count;
+                    if(this->_extensions->count != extensions._extensions->count)
+                    {
+                        this->_extensions->count = extensions._extensions->count;
+                        delete [] this->_extensions->properties;
+                        this->_extensions->properties = new VkExtensionProperties[this->_extensions->count];
+                    }
+                    for(sglInt index = 0;index < this->_extensions->count;index++)this->_extensions->properties[index] = extensions._extensions->properties[index];
+                    return *this;
                 }
-                sglVkInstanceExtension::sglVkInstanceExtension(const sglChar * name)
-                    :_extension(new sglVkInstanceExtension_Impl)
+                sglVkInstanceExtensions::sglVkInstanceExtensions(const sglVkInstanceExtensions & extensions)
+                    :_extensions(new sglVkInstanceExtensions_Impl)
                 {
-                    this->_extension->extension = nullptr;
-                    for(sglInt index = 0;index < this->_extension->group.count;index++)
+                    this->_extensions->count = extensions._extensions->count;
+                    this->_extensions->properties = new VkExtensionProperties[this->_extensions->count];
+                    for(sglInt index = 0;index < this->_extensions->count;index++)this->_extensions->properties[index] = extensions._extensions->properties[index];
+                }
+                sglVkInstanceExtensions::sglVkInstanceExtensions()
+                    :_extensions(new sglVkInstanceExtensions_Impl)
+                {
+                    uint32_t _count_;
+                    VkResult result;
+                    result = vkEnumerateInstanceExtensionProperties(nullptr,&_count_,nullptr);
+                    if(VK_SUCCESS != result)throw sglException("vkEnumerateInstanceExtensionProperties failed!",result);
+                    this->_extensions->count = _count_;
+                    this->_extensions->properties = new VkExtensionProperties[_count_];
+                    vkEnumerateInstanceExtensionProperties(nullptr,&_count_,this->_extensions->properties);
+                    if(VK_SUCCESS != result)throw sglException("vkEnumerateInstanceExtensionProperties failed!",result);
+                }
+                sglVkInstanceExtensions::~sglVkInstanceExtensions()
+                {
+                    delete [] this->_extensions->properties;
+                    delete this->_extensions;
+                    this->_extensions = nullptr;
+                }
+                sglInt sglVkInstanceExtensions::count()const
+                {
+                    return this->_extensions->count;
+                }
+                sglBool sglVkInstanceExtensions::existent(const sglChar * name)const
+                {
+                    for(sglInt index = 0;index < this->_extensions->count;index++)
                     {
                         const sglChar * src = name;
-                        const sglChar * dst = &this->_extension->group.extensions[index].extensionName[0];
+                        const sglChar * dst = &this->_extensions->properties[index].extensionName[0];
                         while(*src == *dst && *src && *dst)++src,++dst;
                         if(*src == *dst)
                         {
-                            this->_extension->extension = &this->_extension->group.extensions[index];
-                            break;
+                            return true;
                         }
                     }
+                    return false;
                 }
-                sglVkInstanceExtension::sglVkInstanceExtension(sglInt index)
-                    :_extension(new sglVkInstanceExtension_Impl)
+                sglInt sglVkInstanceExtensions::find(const sglChar * name)const
                 {
-                    this->_extension->extension = nullptr;
-                    if(index >= sglVkInstanceExtension_Impl::group.count)
+                    for(sglInt index = 0;index < this->_extensions->count;index++)
                     {
-                        throw sglException("Out of range!");
-                    }
-                    this->_extension->extension = &sglVkInstanceExtension_Impl::group.extensions[index];
-                }
-                sglVkInstanceExtension::sglVkInstanceExtension()
-                    :_extension(new sglVkInstanceExtension_Impl)
-                {
-                    this->_extension->extension = nullptr;
-                }
-                sglVkInstanceExtension::sglVkInstanceExtension(const sglVkInstanceExtension & ext)
-                    :_extension(new sglVkInstanceExtension_Impl)
-                {
-                    this->_extension->extension = ext._extension->extension;
-                }
-                sglVkInstanceExtension::~sglVkInstanceExtension()
-                {
-                    delete this->_extension;
-                    this->_extension = nullptr;
-                }
-                    
-                sglBool sglVkInstanceExtension::operator ==(const sglVkInstanceExtension & ext)const
-                {
-                    return ext._extension->extension != this->_extension->extension;
-                }
-                const sglVkInstanceExtension & sglVkInstanceExtension::operator =(const sglVkInstanceExtension & ext)
-                {
-                    this->_extension->extension = ext._extension->extension;
-                    return *this;
-                }
-                const sglVkInstanceExtension & sglVkInstanceExtension::operator ++()
-                {
-                    return *this = this->next();
-                }
-                sglConfigInfo sglVkInstanceExtension::get_config()const
-                {
-                    sglConfigInfo config{};
-                    if(nullptr == this->_extension)return config;
-                    config.name = this->_extension->extension->extensionName;
-                    config.version_major = VK_VERSION_MAJOR(this->_extension->extension->specVersion);
-                    config.version_minor = VK_VERSION_MINOR(this->_extension->extension->specVersion);
-                    config.version_patch = VK_VERSION_PATCH(this->_extension->extension->specVersion);
-                    return config;
-                }
-                sglBool sglVkInstanceExtension::valid()const
-                {
-                    return nullptr != this->_extension->extension;
-                }
-                sglBool sglVkInstanceExtension::invalid()const
-                {
-                    return nullptr == this->_extension->extension;
-                }
-                sglInt sglVkInstanceExtension::index()const
-                {
-                    return (this->_extension->extension - &sglVkInstanceExtension_Impl::group.extensions[0]);
-                }
-                sglVkInstanceExtension sglVkInstanceExtension::next()const
-                {
-                    sglVkInstanceExtension ext = *this;
-                    if(ext._extension->extension)
-                    {
-                        ++ext._extension->extension;
-                        if(ext.index() >= this->count())
+                        const sglChar * src = name;
+                        const sglChar * dst = &this->_extensions->properties[index].extensionName[0];
+                        while(*src == *dst && *src && *dst)++src,++dst;
+                        if(*src == *dst)
                         {
-                            ext._extension->extension = nullptr;
+                            return index;
                         }
                     }
-                    else ext._extension->extension = &sglVkInstanceExtension_Impl::group.extensions[0];
+                    return ~0;
+                }
+                sglVkInstanceExtension sglVkInstanceExtensions::at(sglInt index)const
+                {
+                    sglVkInstanceExtension ext;
+                    ext.name = &this->_extensions->properties[index].extensionName[0];
+                    ext.version_major = VK_VERSION_MAJOR(this->_extensions->properties[index].specVersion);
+                    ext.version_minor = VK_VERSION_MINOR(this->_extensions->properties[index].specVersion);
+                    ext.version_patch = VK_VERSION_PATCH(this->_extensions->properties[index].specVersion);
                     return ext;
+                }
+                sglVkInstanceExtension sglVkInstanceExtensions::at(const sglChar * name)const
+                {
+                    sglInt index = this->find(name);
+                    sglVkInstanceExtension ext;
+                    ext.name = &this->_extensions->properties[index].extensionName[0];
+                    ext.version_major = VK_VERSION_MAJOR(this->_extensions->properties[index].specVersion);
+                    ext.version_minor = VK_VERSION_MINOR(this->_extensions->properties[index].specVersion);
+                    ext.version_patch = VK_VERSION_PATCH(this->_extensions->properties[index].specVersion);
+                    return ext;
+                }
+                sglVkInstanceExtension sglVkInstanceExtensions::operator [](sglInt index)const
+                {
+                    return this->at(index);
+                }
+                sglVkInstanceExtension sglVkInstanceExtensions::operator [](const sglChar * name)const
+                {
+                    return this->at(name);
                 }
 
             }

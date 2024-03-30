@@ -12,27 +12,28 @@ namespace sgl
         {
             namespace vulkan
             {
-                class SGL_API sglVkInstanceExtension
+                struct sglVkInstanceExtension
+                {
+                    const sglChar * name;
+                    sglInt version_major,version_minor,version_patch;
+                };
+                class SGL_API sglVkInstanceExtensions
                 {
                 public:
-                    sglVkInstanceExtension(const sglVkInstanceExtension & ext);
-                    sglVkInstanceExtension(sglInt index);
-                    sglVkInstanceExtension(const sglChar * name);
-                    sglVkInstanceExtension();
-                    ~sglVkInstanceExtension();
-                    
-                    sglConfigInfo get_config()const;
-                    sglBool valid()const;
-                    sglBool invalid()const;
-                    sglVkInstanceExtension next()const;
-                    sglInt index()const;
+                    const sglVkInstanceExtensions & operator =(const sglVkInstanceExtensions & extensions);
+                    sglVkInstanceExtensions(const sglVkInstanceExtensions & extensions);
+                    sglVkInstanceExtensions();
+                    ~sglVkInstanceExtensions();
 
-                    sglBool operator ==(const sglVkInstanceExtension & ext)const;
-                    const sglVkInstanceExtension & operator =(const sglVkInstanceExtension & ext);
-                    const sglVkInstanceExtension & operator ++();
-                    static sglInt count();
+                    sglBool existent(const sglChar * name)const;
+                    sglInt find(const sglChar * name)const;
+                    sglInt count()const;
+                    sglVkInstanceExtension at(sglInt index)const;
+                    sglVkInstanceExtension at(const sglChar * name)const;
+                    sglVkInstanceExtension operator [](sglInt index)const;
+                    sglVkInstanceExtension operator [](const sglChar * name)const;
                 private:
-                    struct sglVkInstanceExtension_Impl * _extension;
+                    struct sglVkInstanceExtensions_Impl * _extensions;
                 };
             }
         }

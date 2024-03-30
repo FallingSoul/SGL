@@ -26,7 +26,7 @@ namespace sgl
                     public:
                         static sglVoid error_callback(sglInt code,const sglChar * desc)
                         {
-                            throw sglException(desc);
+                            throw sglException(desc,code);
                         }
                     };
                     static class sglWindowInitializer

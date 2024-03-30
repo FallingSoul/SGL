@@ -99,9 +99,10 @@ namespace sgl
                     {
                         throw sglException("Cannot get vkDestroyDebugUtilsMessengerEXT address from vulkan instance!");
                     }
-                    if(VK_SUCCESS != this->_messenger->create_proc(this->_messenger->instance,&info,nullptr,&this->_messenger->messenger))
+                    VkResult result = this->_messenger->create_proc(this->_messenger->instance,&info,nullptr,&this->_messenger->messenger); 
+                    if(VK_SUCCESS != result)
                     {
-                        throw sglException("Cannot create vulkan debug messenger!");
+                        throw sglException("Cannot create vulkan debug messenger!",result);
                     }
                 }
                 sglVkDebugMessenger::~sglVkDebugMessenger()
