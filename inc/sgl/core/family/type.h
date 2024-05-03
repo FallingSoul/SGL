@@ -28,6 +28,8 @@ namespace sgl
     using sglBool = bool;
 
     using sglChar = char;
+
+    using sglSize = size_t;
 }
 
 #endif //!__SGL_CORE_FAMILY_TYPE__

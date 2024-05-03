@@ -2,6 +2,7 @@
 #define __SGL__
 
 #include "sgl/core.h"
-#include "sgl/framework.h"
 
+
+using namespace sgl;
 #endif //!__SGL__

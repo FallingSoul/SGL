@@ -10,4 +10,6 @@
 #include "sgl/core/family/cpu.h"
 #include "sgl/core/family/exception.h"
 
+#include "sgl/core/family/_impl.h"
+
 #endif //!__SGL_CORE_FAMILY__

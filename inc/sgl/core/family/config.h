@@ -17,9 +17,10 @@ namespace sgl
     struct sglConfigInfo
     {
         const sglChar * name;
-        sglInt version_major;
-        sglInt version_minor;
-        sglInt version_patch;
+        struct
+        {
+            sglInt major,minor,patch;
+        }version;
     };
     SGL_API sglConfigInfo sglGetConfigInfo();
     SGL_API sglConfigInfo sglGetCompilerInfo();

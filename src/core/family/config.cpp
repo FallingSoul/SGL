@@ -7,9 +7,11 @@ namespace sgl
     static sglConfigInfo sgl_config_info = 
     {
         "SGL",
-        SGL_VERSION_MAJOR,
-        SGL_VERSION_MINOR,
-        SGL_VERSION_PATCH
+        {
+            SGL_VERSION_MAJOR,
+            SGL_VERSION_MINOR,
+            SGL_VERSION_PATCH
+        }
     };
     static sglConfigInfo sgl_compiler_info =
     {
@@ -22,15 +24,16 @@ namespace sgl
 #else
         "Unknown",
 #endif
-        SGL_CL_MAJOR,
-        SGL_CL_MINOR,
-        SGL_CL_PATCH
+        {
+            SGL_CL_MAJOR,
+            SGL_CL_MINOR,
+            SGL_CL_PATCH
+        }
     };
     sglConfigInfo sglGetConfigInfo()
     {
         return sgl_config_info;
     }
-    
     sglConfigInfo sglGetCompilerInfo()
     {
         return sgl_compiler_info;
