@@ -15,9 +15,16 @@ namespace sgl
             sgl_Impl(const sgl_Impl & impl)
                 :_target(new Target(*impl._target))
             {}
+            sgl_Impl(const Target & target)
+                :_target(new Target(target))
+            {}
             template<typename T>
             sgl_Impl(const sgl_Impl<T> & impl)
-                :_target(*impl._target)
+                :_target(new Target(*impl._target))
+            {}
+            template<typename T>
+            sgl_Impl(const T & target)
+                :_target(new Target(target))
             {}
             template<typename ... Args>
             sgl_Impl(Args ... args)
@@ -35,11 +42,11 @@ namespace sgl
             {
                 return nullptr == this->_target;
             }
-            Target * operator->()noexcept
+            const Target * operator-> ()const noexcept
             {
                 return this->_target;
             }
-            const Target * operator->()const noexcept
+            Target * operator-> ()noexcept
             {
                 return this->_target;
             }
@@ -51,6 +58,25 @@ namespace sgl
             {
                 return this->_target;
             }
+            auto operator= (const sgl_Impl & impl)
+            {
+                return *this->_target = *impl._target;
+            }
+            auto operator= (const Target & target)
+            {
+                return *this->_target = target;
+            }
+            template<typename T>
+            auto operator= (const sgl_Impl<T> & impl)
+            {
+                return *this->_target = *impl._target;
+            }
+            template<typename T>
+            auto operator= (const T & target)
+            {
+                return *this->_target = target;
+            }
+
         private:
             Target * _target;
         };

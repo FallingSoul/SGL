@@ -3,5 +3,6 @@
 
 
 #include "sgl/core/family.h"
+#include "sgl/core/windows.h"
 
 #endif //!__SGL_CORE__

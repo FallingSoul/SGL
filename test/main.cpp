@@ -1,21 +1,34 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <clocale>
+#include <ctime>
 
 
 #include "sgl/sgl.h"
 
 int main()
 {
-    setlocale(LC_ALL,"zh_cn.utf-8");
-    printf("启动耗时: %gsec\n",clock() / 1000.);
+    setlocale(LC_ALL,"zh_cn.utf-8"); // Change Charset
+    printf("启动耗时: %g sec\n",1. * clock() / CLOCKS_PER_SEC);
 
 
-    
+    core::sglWindowContext ctx;
+    core::sglWindow window("Hello Window!",1280,720);
+    window.show();
+    while(!window.closed())
+    {
+        sglDouble beg = ctx.get_time();
+        ctx.poll_events();
+        if(window.key_pressed(core::sglKeyCode::Escape))
+        {
+            window.close();
+        }
+        printf("\r事件帧率: %g fps",1 / (ctx.get_time() - beg));
+    }
 
 
-    printf("结束耗时: %gsec\n",clock() / 1000.);
+
+    printf("结束耗时: %g sec\n",1. * clock() / CLOCKS_PER_SEC);
 
     return 0;
 }
