@@ -9,7 +9,7 @@
 int main()
 {
     setlocale(LC_ALL,"zh_cn.utf-8"); // Change Charset
-    printf("启动耗时: %g sec\n",1. * clock() / CLOCKS_PER_SEC);
+    printf("\n启动耗时: %g sec\n",1. * clock() / CLOCKS_PER_SEC);
 
 
     core::sglWindowContext ctx;
@@ -28,7 +28,7 @@ int main()
 
 
 
-    printf("结束耗时: %g sec\n",1. * clock() / CLOCKS_PER_SEC);
+    printf("\n结束耗时: %g sec\n",1. * clock() / CLOCKS_PER_SEC);
 
     return 0;
 }
