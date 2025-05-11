@@ -14,19 +14,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/build/$
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/build/${CMAKE_CXX_COMPILER_ID}${CMAKE_CXX_COMPILER_VERSION}/RelWithDegInfo")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/build/${CMAKE_CXX_COMPILER_ID}${CMAKE_CXX_COMPILER_VERSION}/RelWithDegInfo")
 
+# cmake
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-
+# include spir-v
+include(SPIR-V)
 # for third-party libraries
 add_subdirectory("${PROJECT_SOURCE_DIR}/third-party")
 
 
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "${PROJECT_SOURCE_DIR}/inc/*.*")
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "${PROJECT_SOURCE_DIR}/src/*.*")
+file(GLOB_RECURSE ${PROJECT_NAME}_PCH "${PROJECT_SOURCE_DIR}/inc/sgl/pch.h" "${PROJECT_SOURCE_DIR}/src/sgl/pch.cpp")
 
 message("---- Headers ----")
 foreach(X ${${PROJECT_NAME}_HEADERS})
@@ -39,23 +43,32 @@ foreach(X ${${PROJECT_NAME}_SOURCES})
     file(RELATIVE_PATH Y ${PROJECT_SOURCE_DIR} ${X})
     message("\t${Y}")
 endforeach()
+message("----   PCH   ----")
+foreach(X ${${PROJECT_NAME}_PCH})
+    file(RELATIVE_PATH Y ${PROJECT_SOURCE_DIR} ${X})
+    message("\t${Y}")
+endforeach()
+
 
 set(SGL_LIBRARY ${PROJECT_NAME})
 add_library(${SGL_LIBRARY} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+# precompile headers
+target_precompile_headers(${SGL_LIBRARY} PUBLIC ${${PROJECT_NAME}_PCH})
 # include
-target_include_directories(${SGL_LIBRARY} PUBLIC "${PROJECT_SOURCE_DIR}/inc/")
+target_include_directories(${SGL_LIBRARY} PUBLIC "${PROJECT_SOURCE_DIR}/inc/" PRIVATE ${THIRDPARTY_INCLUDE})
 # define version numbers
 target_compile_definitions(${SGL_LIBRARY}
     PRIVATE ${SGL_LIBRARY}_BUILD
     PUBLIC ${SGL_LIBRARY}_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
     PUBLIC ${SGL_LIBRARY}_VERSION_MINOR=${PROJECT_VERSION_MINOR}
-    PUBLIC ${SGL_LIBRARY}_VERSION_PATCH=${PROJECT_VERSION_PATCH})
+    PUBLIC ${SGL_LIBRARY}_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+    PUBLIC ${SGL_LIBRARY}_LIBRARY_NAME="${PROJECT_NAME}")
 # link libraries
 target_link_libraries(${SGL_LIBRARY} ${THIRDPARTY_LIBRARIES})
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries(${SGL_LIBRARY} stdc++)
 endif()
 
-if(EXISTS "${PROJECT_SOURCE_DIR}/test")
-    add_subdirectory("${PROJECT_SOURCE_DIR}/test")
+if(EXISTS "${PROJECT_SOURCE_DIR}/tests")
+    add_subdirectory("${PROJECT_SOURCE_DIR}/tests")
 endif()

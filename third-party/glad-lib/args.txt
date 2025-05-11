@@ -1,0 +1,1 @@
+--out-path D:/Code/SGL/third-party/glad-lib --api gl:core=4.6 --extensions " " --merge --reproducible c 

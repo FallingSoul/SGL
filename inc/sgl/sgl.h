@@ -1,8 +1,7 @@
 #ifndef __SGL__
 #define __SGL__
 
+#include "sgl/fundation.h"
 #include "sgl/core.h"
-
-
-using namespace sgl;
+#include "sgl/utils.h"
 #endif //!__SGL__
